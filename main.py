@@ -11,7 +11,21 @@ indentifiers = re.compile(r'[a-zA-Z]+\d|[a-zA-Z]+')
 int_literal = re.compile(r'\d+')
 float_literal = re.compile(r'\d+\.+\d+')
 string_literal = re.compile(r'\w+')
+'''
+BNF:
 
+exp -> if ( comparison_exp ) :
+comparison_exp -> identifier > identifier
+
+exp -> id = math;
+math -> multi + multi
+multi -> int * float | float
+
+exp -> print( p_statement )
+p_statement -> string
+'''
+
+### LEXER LOGIC ###
 def CutOneLineTokens(line,obj):
     outputList = []
     while(len(line)!=0):
