@@ -61,21 +61,28 @@ class GUI:
         self.line_num_out = 1   # current line number of the output
 
         # top left and right frames
-        self.UI_frame_top_left = Frame(self.master,width=550,height=100,bg="black").grid(row=0,column=0)
-        self.UI_frame_top_right = Frame(self.master,width=550,height=100,bg="black").grid(row=0,column=1)
+        self.UI_frame_top_left = Frame(self.master,width=366,height=100,bg="black").grid(row=0,column=0)
+        self.UI_frame_top_middle = Frame(self.master,width=366,height=100,bg="black").grid(row=0,column=1)
+        self.UI_frame_top_right = Frame(self.master,width=366,height=100,bg="black").grid(row=0,column=1)
 
         # UI left side
-        self.UI_frame_left = Frame(self.master,width=550,height=320,bg="black").grid(row=1,column=0,padx=5,sticky=N)
+        self.UI_frame_left = Frame(self.master,width=366,height=320,bg="black").grid(row=1,column=0,padx=5,sticky=N)
+
+        # UI middle
+        self.UI_frame_left = Frame(self.master,width=366,height=320,bg="black").grid(row=1,column=1,padx=5,sticky=N)
+
+        # UI right side
+        self.UI_frame_right = Frame(self.master,width=366,height=320,pady=5,bg="black").grid(row=1,column=2,padx=5,sticky=N)
 
         # source input
         Label(self.UI_frame_left,text="Sorce Code Input:",bg="#92c7d1").grid(row=0,column=0,padx=50,pady=5,sticky=S)
-        self.input_code = Text(self.UI_frame_left,width=50,height=20,bg="#393b40",fg="#92c7d1",bd=5)
-        self.input_code.grid(row=1,column=0,sticky=N)
+        self.input_code = Text(self.UI_frame_left,width=40,height=20,bg="#393b40",fg="#92c7d1",bd=5)
+        self.input_code.grid(row=1,column=0)
 
         # line counter
-        Label(self.UI_frame_left,text="Current Processing Line:",bg="#92c7d1").grid(row=2,column=0,padx=80,pady=5,sticky=W)
+        Label(self.UI_frame_left,text="Current Processing Line:",bg="#92c7d1").grid(row=2,column=0,padx=50,pady=5,sticky=W)
         self.line = Entry(self.master,bg="#92c7d1")
-        self.line.grid(row=2,column=0,padx=5,pady=5)
+        self.line.grid(row=2,column=0,padx=50,pady=5,sticky=E)
         self.line.insert(0,str(self.line_num))
         self.line.config(state=DISABLED)
     
@@ -83,21 +90,23 @@ class GUI:
         self.next_button = Button(self.master,text="Next Line",command=self.get_line,bg="#92c7d1")
         self.next_button.grid(row=3,column=0)
 
-        # reset button
-        # self.reset_button = Button(self.master,text="Reset",command=self.get_line,bg="#92c7d1")
-        # self.reset_button.grid(row=3,column=1)
-
-        # UI right side
-        self.UI_frame_right = Frame(self.master,width=550,height=320,pady=5,bg="black").grid(row=1,column=1,padx=5,sticky=N)
-
         # lex output
-        Label(self.UI_frame_right,text="Lexical Analyzed Result:",bg="#92c7d1").grid(row=0,column=1,padx=50,pady=5,sticky=S)
-        self.output_lex = Text(self.UI_frame_right,width=50,height=20,state=DISABLED,bg="#393b40",fg="#92c7d1",bd=5)
-        self.output_lex.grid(row=1,column=1,sticky=N)
+        Label(self.UI_frame_right,text="Tokens:",bg="#92c7d1").grid(row=0,column=1,padx=50,pady=5,sticky=S)
+        self.output_lex = Text(self.UI_frame_right,width=40,height=20,state=DISABLED,bg="#393b40",fg="#92c7d1",bd=5)
+        self.output_lex.grid(row=1,column=1,sticky=W)
+
+        # reset button
+        self.reset_button = Button(self.master,text="Reset",command=self.reset,bg="#92c7d1")
+        self.reset_button.grid(row=3,column=1)
+
+        # Parse output
+        Label(self.UI_frame_right,text="Parse Tree:",bg="#92c7d1").grid(row=0,column=2,padx=50,pady=5,sticky=S)
+        self.output_parse = Text(self.UI_frame_right,width=40,height=20,state=DISABLED,bg="#393b40",fg="#92c7d1",bd=5)
+        self.output_parse.grid(row=1,column=2,sticky=W)
 
         # quit button
         self.quit_button = Button(self.master,text="Quit",command=self.quit,bg="#92c7d1")
-        self.quit_button.grid(row=3,column=1)
+        self.quit_button.grid(row=3,column=2)
 
     ### FUNCTIONS ###
 
