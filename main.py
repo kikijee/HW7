@@ -25,6 +25,60 @@ exp -> print( p_statement )
 p_statement -> string
 '''
 
+### PARSER LOGIC ##
+class Parser:
+    def __init__(self):
+        self.token = ("","")
+
+    def accept_token(self,tokenArr):
+        print("     accept token from the list:"+self.token[1])
+        self.token=tokenArr.pop(0)
+
+    def exp(self):
+        print("\n----parent node exp, finding children nodes:")
+        if(self.token[0]=="id"):
+            print("child node (internal): identifier")
+            print("   identifier has child node (token):"+self.token[1])
+            self.accept_token()
+        else:
+            print("expect identifier as the first element of the expression!\n")
+            return
+
+        if(self.token[1]=="="):
+            print("child node (token):"+self.token[1])
+            self.accept_token()
+        else:
+            print("expect = as the second element of the expression!")
+            return
+
+        print("Child node (internal): math")
+        self.math()
+
+    def math(self):
+        print("\n----parent node math, finding children nodes:")
+        if(self.token[0]=="float"):
+            print("child node (internal): float")
+            print("   float has child node (token):"+self.token[1])
+            self.accept_token()
+        elif (self.token[0]=="int"):
+            print("child node (internal): int")
+            print("   int has child node (token):"+self.token[1])
+            self.accept_token()
+
+            if(self.token[1]=="+"):
+                print("child node (token):"+self.token[1])
+                self.accept_token()
+
+                print("child node (internal): math")
+                self.math()
+            else:
+                print("error, you need + after the int in the math")
+
+        else:
+            print("error, math expects float or int")
+### END PARSER LOGIC
+
+
 ### LEXER LOGIC ###
 def CutOneLineTokens(line,obj):
     outputList = []
@@ -61,6 +115,7 @@ def CutOneLineTokens(line,obj):
             outputList.append(f'<lit,{result.group(0)}>')
             line = line[result.end():]
     obj.print_line(outputList)
+    ### END LEXER LOGIC ###
 
 class GUI:
     def __init__(self, root):
