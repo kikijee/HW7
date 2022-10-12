@@ -14,14 +14,14 @@ string_literal = re.compile(r'\w+')
 '''
 BNF:
 
-exp -> if ( comparison_exp ) :
-comparison_exp -> identifier > identifier
-
-exp -> id = math;
+exp -> id = math;                           *exp1()
 math -> multi + multi
 multi -> int * float | float
 
-exp -> print( p_statement )
+exp -> if ( comparison_exp ) :              *exp2()
+comparison_exp -> identifier > identifier
+
+exp -> print( p_statement ):                *exp3()
 p_statement -> string
 '''
 
@@ -34,16 +34,23 @@ class Parser:
         print("     accept token from the list:"+self.token[1])
         self.token=tokenArr.pop(0)
 
-    def exp(self):
+    # for expressions that start with a keyword (type)
+    def exp1(self):
         print("\n----parent node exp, finding children nodes:")
-        if(self.token[0]=="id"):
+        if(self.token[0]=="float"):    # for cases of identifiers
+            print("child node (internal): keyword")
+            print("   keyword has child node (token):"+self.token[1])
+            self.accept_token()
+        else:
+            print("expect keyword (type) as the first element of the expression!\n")
+            return
+        if(self.token[0]=="id"):    # for cases of identifiers
             print("child node (internal): identifier")
             print("   identifier has child node (token):"+self.token[1])
             self.accept_token()
         else:
-            print("expect identifier as the first element of the expression!\n")
+            print("expect identifier or keyword as the first element of the expression!\n")
             return
-
         if(self.token[1]=="="):
             print("child node (token):"+self.token[1])
             self.accept_token()
@@ -54,17 +61,70 @@ class Parser:
         print("Child node (internal): math")
         self.math()
 
+    # for expresssions that start with an "if"
+    def exp2(self):
+        print("\n----parent node exp, finding children nodes:")
+        if(self.token[0]=="key"): 
+            print("child node (internal): keyword")
+            print("   keyword has child node (token):"+self.token[1])
+            self.accept_token()
+        else:
+            print("expect identifier or keyword as the first element of the expression!\n")
+            return
+        if(self.token[1]=="("):
+            print("child node (internal): separator")
+            print("   separator has child node (token):"+self.token[1])
+            self.accept_token()
+            self.comparison()
+        else:
+            print("expected '(' ")
+            return
+        if(self.token[1]==")"):
+            print("child node (internal): separator")
+            print("   separator has child node (token):"+self.token[1])
+            self.accept_token()
+        else:
+            print("expected ')' ")
+            return
+        if(self.token[1]==":"):
+            print("child node (internal): separator")
+            print("   separator has child node (token):"+self.token[1])
+            self.accept_token()
+            return
+        else:
+            print("expected ':' ")
+            return
+
+    # for expressions that start with "print"
+    def exp3(self):
+        pass
+
     def math(self):
         print("\n----parent node math, finding children nodes:")
-        if(self.token[0]=="float"):
-            print("child node (internal): float")
-            print("   float has child node (token):"+self.token[1])
-            self.accept_token()
-        elif (self.token[0]=="int"):
-            print("child node (internal): int")
-            print("   int has child node (token):"+self.token[1])
-            self.accept_token()
+        # to do: add check for ';'
+        if(self.token[0]=="float_lit"):
+            print("child node (internal): float literal")
+            print("   float literal has child node (token):"+self.token[1])
+            #self.accept_token()
+            self.multi()
+            if(self.token[1]=="+"):
+                print("child node (internal): float literal")
+                print("   float literal has child node (token):"+self.token[1])
+                self.accept_token()
+                self.math()
+        elif (self.token[0]=="int_lit"):
+            print("child node (internal): int literal")
+            print("   int literal has child node (token):"+self.token[1])
+            #self.accept_token()
+            self.multi()
+            if(self.token[1]=="+"):
+                print("child node (internal): float literal")
+                print("   float literal has child node (token):"+self.token[1])
+                self.accept_token()
+                self.math()
+        
 
+            '''
             if(self.token[1]=="+"):
                 print("child node (token):"+self.token[1])
                 self.accept_token()
@@ -73,9 +133,74 @@ class Parser:
                 self.math()
             else:
                 print("error, you need + after the int in the math")
+            '''
+        #else:
+        #    print("error, math expects float literal or int literal")
 
+    def multi(self):
+        print("\n----parent node multi, finding children nodes:")
+        if(self.token[0]=="float_lit"): # for float literals in multi
+            self.accept_token()
+            if(self.token[1]==";"):
+                print("child node (internal): separator")
+                print("   separator has child node (token):"+self.token[1])
+                self.accept_token()
+                return
+            elif(self.token[1]=="*"):
+                print("child node (internal): operator")
+                print("   operator has child node (token):"+self.token[1])
+                self.accept_token()
+                if(self.token[0]=="int_lit"):
+                    print("child node (internal): int literal")
+                    print("   int literal has child node (token):"+self.token[1])
+                    self.accept_token()
+                else:
+                    print("multiplication only supports int * float")
+            else:
+                print("multi format problem")
+        else:                           # for int literal's in multi
+            self.accept_token()
+            if(self.token[1]==";"):
+                print("child node (internal): separator")
+                print("   separator has child node (token):"+self.token[1])
+                self.accept_token()
+                return 
+            elif(self.token[1]=="*"):
+                print("child node (internal): operator")
+                print("   operator has child node (token):"+self.token[1])
+                self.accept_token()
+                if(self.token[0]=="float_lit"):
+                    print("child node (internal): float literal")
+                    print("   float literal has child node (token):"+self.token[1])
+                    self.accept_token()
+                else:
+                    print("multiplication only supports int * float")
+            else:
+                print("multi format problem")
+
+    def comparison(self):
+        if(self.token[0]=="id"):
+            print("child node (internal): id")
+            print("   id has child node (token):"+self.token[1])
+            self.accept_token()
         else:
-            print("error, math expects float or int")
+            print("expected id")
+            return
+        if(self.token[1] == '>'):
+            print("child node (internal): operator")
+            print("   operator has child node (token):"+self.token[1])
+            self.accept_token()
+        else:
+            print("expected operator")
+            return
+        if(self.token[0]=="id"):
+            print("child node (internal): id")
+            print("   id has child node (token):"+self.token[1])
+            self.accept_token()
+            return
+        else:
+            print("expected id")
+            return
 ### END PARSER LOGIC
 
 
@@ -103,16 +228,16 @@ def CutOneLineTokens(line,obj):
             if(result.group(0) == '\'' or result.group(0) == '"' or result.group(0) == '“' or result.group(0) == '”'):
                 if(string_literal.search(line) != None):   #string-literals
                     result = string_literal.search(line)
-                    outputList.append(f'<lit,{result.group(0)}>')
+                    outputList.append(f'<str_lit,{result.group(0)}>')
                     line = line[result.end():]
                     line = line.lstrip()
         elif(float_literal.match(line) != None):   #float-literals
             result = float_literal.search(line)
-            outputList.append(f'<lit,{result.group(0)}>')
+            outputList.append(f'<float_lit,{result.group(0)}>')
             line = line[result.end():]
         elif(int_literal.search(line) != None):   #int-literals
             result = int_literal.search(line)
-            outputList.append(f'<lit,{result.group(0)}>')
+            outputList.append(f'<int_lit,{result.group(0)}>')
             line = line[result.end():]
     obj.print_line(outputList)
     ### END LEXER LOGIC ###
@@ -125,6 +250,7 @@ class GUI:
         self.master.geometry("1100x600")
         self.master.maxsize(1100,600)
         self.master.config(bg="black")
+        self.parseObj = Parser()
 
         self.line_num = 0 # number to hold current line
         self.line_num_out = 1   # current line number of the output
