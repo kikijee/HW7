@@ -53,7 +53,6 @@ class Parser:
 
     def accept_token(self):
         print("     accept token from the list:"+self.token[1])
-        self.guiObj.output_lex.insert(str(self.line_num_out)+'.0','<'+str(x[0])+','+str(x[1])+'>'+'\n\n')
         if(self.token[1] != ';' and self.token[1] != ':' and self.tokenArr):
             self.token=self.tokenArr.pop(0)
         
