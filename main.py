@@ -53,6 +53,7 @@ class Parser:
 
     def accept_token(self):
         print("     accept token from the list:"+self.token[1])
+        self.guiObj.print_line_parser("     accept token from the list:"+self.token[1]+'\n')
         if(self.token[1] != ';' and self.token[1] != ':' and self.tokenArr):
             self.token=self.tokenArr.pop(0)
         
@@ -60,9 +61,12 @@ class Parser:
     # for expressions that start with a keyword (type)
     def exp1(self):
         print("\n----parent node exp1, finding children nodes:")
+        self.guiObj.print_line_parser("\n----parent node exp1, finding children nodes:"+'\n')
         if(self.token[1]=="float"):    # for cases of identifiers
             print("child node (internal): keyword")
+            self.guiObj.print_line_parser("child node (internal): keyword"+'\n')
             print("   keyword has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("   keyword has child node (token):"+self.token[1]+'\n')
             self.accept_token()
         
         else:
@@ -71,27 +75,33 @@ class Parser:
         
         if(self.token[0]=="id"):    # for cases of identifiers
             print("child node (internal): identifier")
+            self.guiObj.print_line_parser("child node (internal): identifier"+'\n')
             print("   identifier has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("   identifier has child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expect identifier or keyword as the first element of the expression!\n")
             return
         if(self.token[1]=="="):
             print("child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expect = as the second element of the expression!")
             return
 
         print("Child node (internal): math")
+        self.guiObj.print_line_parser("Child node (internal): math"+'\n')
         self.math()
 
     # for expresssions that start with an "if"
     def exp2(self):
         print("\n----parent node exp2, finding children nodes:")
+        self.guiObj.print_line_parser("\n----parent node exp2, finding children nodes:"+'\n')
         if(self.token[1]=="if"): 
             print("child node (internal): keyword")
             print("   keyword has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expect identifier or keyword as the first element of the expression!\n")
@@ -99,14 +109,20 @@ class Parser:
         if(self.token[1]=="("):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
+            print("child node (internal): comparison")
+            self.guiObj.print_line_parser("child node (internal): comparison"+'\n')
             self.comparison()
+            print("\n----parent node exp2, finding children nodes:")
+            self.guiObj.print_line_parser("\n----parent node exp2, finding children nodes:"+'\n')
         else:
             print("expected '(' ")
             return
         if(self.token[1]==")"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expected ')' ")
@@ -114,6 +130,7 @@ class Parser:
         if(self.token[1]==":"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
             return
         else:
@@ -123,9 +140,11 @@ class Parser:
     # for expressions that start with "print"
     def exp3(self):
         print("\n----parent node exp3, finding children nodes:")
+        self.guiObj.print_line_parser("\n----parent node exp3, finding children nodes:"+'\n')
         if(self.token[1]=="print"): 
             print("child node (internal): keyword")
             print("   keyword has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expect keyword 'print' as the first element of the expression!\n")
@@ -133,15 +152,20 @@ class Parser:
         if(self.token[1]=="("):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
             print("child node (internal): p_statement")
+            self.guiObj.print_line_parser("child node (internal): p_statement"+'\n')
             self.print_statement()
+            print("\n----parent node exp3, finding children nodes:")
+            self.guiObj.print_line_parser("\n----parent node exp3, finding children nodes:"+'\n')
         else:
             print("expected '(' ")
             return
         if(self.token[1]==")"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expected ')' ")
@@ -149,6 +173,7 @@ class Parser:
         if(self.token[1]==";"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
             return
         else:
@@ -157,23 +182,29 @@ class Parser:
 
     def math(self,firstRun = True):
         print("\n----parent node math, finding children nodes:")
+        self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
         if(self.token[0]=="float_lit"):
             
             print("child node (internal): multi")
+            self.guiObj.print_line_parser("child node (internal): multi"+'\n')
             #print("   float literal has child node (token):"+self.token[1])
             
             #self.accept_token()
             self.multi()
             if(self.token[1]=="+"):
                 print("\n----parent node math, finding children nodes:")
+                self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
                 print("child node (internal): operator")
                 print("   operator has child node (token):"+self.token[1])
+                self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 self.math(False)
             elif(self.token[1]==";" and firstRun == False):
                 print("\n----parent node math, finding children nodes:")
+                self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
                 print("child node (internal): separator")
                 print("   separator has child node (token):"+self.token[1])
+                self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 return
             else:
@@ -181,19 +212,24 @@ class Parser:
 
         elif (self.token[0]=="int_lit"):
             print("child node (internal): multi")
+            self.guiObj.print_line_parser("child node (internal): multi"+'\n')
             #print("   int literal has child node (token):"+self.token[1])
             #self.accept_token()
             self.multi()
             if(self.token[1]=="+"):
                 print("\n----parent node math, finding children nodes:")
+                self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
                 print("child node (internal): float operator")
                 print("   operator has child node (token):"+self.token[1])
+                self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 self.math(False)
             elif(self.token[1]==";" and firstRun == False):
                 print("\n----parent node math, finding children nodes:")
+                self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
                 print("child node (internal): separator")
                 print("   separator has child node (token):"+self.token[1])
+                self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 return
             else:
@@ -204,19 +240,25 @@ class Parser:
 
     def multi(self):
         print("\n----parent node multi, finding children nodes:")
+        self.guiObj.print_line_parser("\n----parent node multi, finding children nodes:"+'\n')
         if(self.token[0]=="float_lit"): # for float literals in multi
             print("child node (internal): float literal")
+            self.guiObj.print_line_parser("child node (internal): float literal"+'\n')
             print("   float literal has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("   float literal has child node (token):"+self.token[1]+'\n')
             self.accept_token()
             if(self.token[1]==";" or self.token[1]=="+"):
                 return
             elif(self.token[1]=="*"):
                 print("child node (internal): operator")
                 print("   operator has child node (token):"+self.token[1])
+                self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 if(self.token[0]=="int_lit"):
                     print("child node (internal): int literal")
+                    self.guiObj.print_line_parser("child node (internal): int literal"+'\n')
                     print("   int literal has child node (token):"+self.token[1])
+                    self.guiObj.print_line_parser("   int literal has child node (token):"+self.token[1]+'\n')
                     self.accept_token()
                 else:
                     print("multiplication only supports int * float")
@@ -224,17 +266,22 @@ class Parser:
                 print("multi format problem")
         else:                           # for int literal's in multi
             print("child node (internal): int literal")
+            self.guiObj.print_line_parser("child node (internal): int literal"+'\n')
             print("   int literal has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("   int literal has child node (token):"+self.token[1]+'\n')
             self.accept_token()
             if(self.token[1]==";" or self.token[1]=="+"):
                 return 
             elif(self.token[1]=="*"):
                 print("child node (internal): operator")
                 print("   operator has child node (token):"+self.token[1])
+                self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 if(self.token[0]=="float_lit"):
                     print("child node (internal): float literal")
+                    self.guiObj.print_line_parser("child node (internal): float literal"+'\n')
                     print("   float literal has child node (token):"+self.token[1])
+                    self.guiObj.print_line_parser("   float literal has child node (token):"+self.token[1]+'\n')
                     self.accept_token()
                 else:
                     print("multiplication only supports int * float")
@@ -243,9 +290,12 @@ class Parser:
 
     def comparison(self):
         print("\n----parent node comparison, finding children nodes:")
+        self.guiObj.print_line_parser("\n----parent node comparison, finding children nodes:"+'\n')
         if(self.token[0]=="id"):
             print("child node (internal): id")
+            self.guiObj.print_line_parser("child node (internal): id"+'\n')
             print("   id has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("   id has child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expected id")
@@ -253,13 +303,16 @@ class Parser:
         if(self.token[1] == '>'):
             print("child node (internal): operator")
             print("   operator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("expected operator >")
             return
         if(self.token[0]=="id"):
             print("child node (internal): id")
+            self.guiObj.print_line_parser("child node (internal): id"+'\n')
             print("   id has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("   id has child node (token):"+self.token[1]+'\n')
             self.accept_token()
             return
         else:
@@ -268,21 +321,26 @@ class Parser:
         
     def print_statement(self):
         print("\n----parent node p_statement, finding children nodes:")
+        self.guiObj.print_line_parser("\n----parent node p_statement, finding children nodes:"+'\n')
         if(self.token[1]=='"'or'“'or'”'or"'"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("invalid print statement")
         if(self.token[0]=="str_lit"):
             print("child node (internal): string literal")
+            self.guiObj.print_line_parser("child node (internal): string literal"+'\n')
             print("   string literal has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("   string literal has child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("invalid print statement")
         if(self.token[1]=='"'or'“'or'”'or"'"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
+            self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
             self.accept_token()
         else:
             print("invalid print statement")
@@ -337,7 +395,7 @@ def CutOneLineTokens(line,guiObj,parseObj):
             line = line[result.end():]
     
     guiObj.print_line(outputList)
-    parseObj.parse(outputList,guiObj)
+    parseObj.parse(outputList)
     ### END LEXER LOGIC ###
 
 class GUI:
@@ -426,8 +484,12 @@ class GUI:
             self.line_num_out += 2
         self.output_lex.config(state=DISABLED)
 
-    def print_line_parser(self,str):
-        pass
+    def print_line_parser(self,output):
+        if '\n' in output: self.line_num_p += 1
+        self.output_parse.config(state=NORMAL)
+        self.output_parse.insert(str(self.line_num_p)+'.0',output)
+        self.output_parse.config(state=DISABLED)
+        self.line_num_p += 1
 
     # function to reset both text boxes along with setting the initial value of line counter to 0
     def reset(self):
@@ -444,6 +506,10 @@ class GUI:
         self.output_lex.config(state=NORMAL)
         self.output_lex.delete("1.0","end")
         self.output_lex.config(state=DISABLED)
+
+        self.output_parse.config(state=NORMAL)
+        self.output_parse.delete("1.0","end")
+        self.output_parse.config(state=DISABLED)
 
     def quit(self):
         self.master.destroy()
