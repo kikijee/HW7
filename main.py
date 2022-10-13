@@ -46,11 +46,15 @@ class Parser:
 
     def accept_token(self):
         print("     accept token from the list:"+self.token[1])
-        self.token=self.tokenArr.pop(0)
+        if(self.token[1] != ';' and self.token[1] != ':' and self.tokenArr):
+            self.token=self.tokenArr.pop(0)
+        else:
+            print("syntax error")
+        print("done")
 
     # for expressions that start with a keyword (type)
     def exp1(self):
-        print("\n----parent node exp, finding children nodes:")
+        print("\n----parent node exp1, finding children nodes:")
         if(self.token[1]=="float"):    # for cases of identifiers
             print("child node (internal): keyword")
             print("   keyword has child node (token):"+self.token[1])
@@ -79,7 +83,7 @@ class Parser:
 
     # for expresssions that start with an "if"
     def exp2(self):
-        print("\n----parent node exp, finding children nodes:")
+        print("\n----parent node exp2, finding children nodes:")
         if(self.token[1]=="if"): 
             print("child node (internal): keyword")
             print("   keyword has child node (token):"+self.token[1])
@@ -113,7 +117,7 @@ class Parser:
 
     # for expressions that start with "print"
     def exp3(self):
-        print("\n----parent node exp, finding children nodes:")
+        print("\n----parent node exp3, finding children nodes:")
         if(self.token[1]=="print"): 
             print("child node (internal): keyword")
             print("   keyword has child node (token):"+self.token[1])
@@ -184,6 +188,9 @@ class Parser:
                 return
             else:
                 print("math error: math -> multi + multi")
+        else:
+            print("math structure error")
+            return
 
     def multi(self):
         print("\n----parent node multi, finding children nodes:")
@@ -306,10 +313,13 @@ def CutOneLineTokens(line,guiObj,parseObj):
             line = line[result.end():]
             if(result.group(0) == '\'' or result.group(0) == '"' or result.group(0) == '“' or result.group(0) == '”'):
                 if(string_literal.search(line) != None):   #string-literals
-                    result = string_literal.search(line)
+                    #result = string_literal.search(line)
+                    result = line[:line.find('"')]
                     #outputList.append(f'<str_lit,{result.group(0)}>')
-                    outputList.append(("str_lit",result.group(0)))
-                    line = line[result.end():]
+                    #outputList.append(("str_lit",result.group(0)))
+                    outputList.append(("str_lit",result))
+                    #line = line[result.end():]
+                    line = line[line.find('"'):]
                     line = line.lstrip()
         elif(float_literal.match(line) != None):   #float-literals
             result = float_literal.search(line)
