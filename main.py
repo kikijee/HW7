@@ -12,6 +12,12 @@ int_literal = re.compile(r'\d+')
 float_literal = re.compile(r'\d+\.+\d+')
 string_literal = re.compile(r'\w+')
 '''
+float mathresult1 = 5*4.3 + 2.1; 
+float mathresult2 = 4.1 + 2*5.5; 
+if(mathresult1>mathresult2):
+print("I just built some parse trees");
+'''
+'''
 BNF:
 
 exp -> id = math;                           *exp1()
@@ -27,9 +33,10 @@ p_statement -> string
 
 ### PARSER LOGIC ##
 class Parser:
-    def __init__(self):
+    def __init__(self,guiObj):
         self.token = ("","")
         self.tokenArr = []
+        self.guiObj = guiObj
     
     def parse(self,tokenArr):
         if self.tokenArr: self.tokenArr.clear()
@@ -46,11 +53,10 @@ class Parser:
 
     def accept_token(self):
         print("     accept token from the list:"+self.token[1])
+        self.guiObj.output_lex.insert(str(self.line_num_out)+'.0','<'+str(x[0])+','+str(x[1])+'>'+'\n\n')
         if(self.token[1] != ';' and self.token[1] != ':' and self.tokenArr):
             self.token=self.tokenArr.pop(0)
-        else:
-            print("syntax error")
-        print("done")
+        
 
     # for expressions that start with a keyword (type)
     def exp1(self):
@@ -123,12 +129,13 @@ class Parser:
             print("   keyword has child node (token):"+self.token[1])
             self.accept_token()
         else:
-            print("expect identifier or keyword as the first element of the expression!\n")
+            print("expect keyword 'print' as the first element of the expression!\n")
             return
         if(self.token[1]=="("):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
             self.accept_token()
+            print("child node (internal): p_statement")
             self.print_statement()
         else:
             print("expected '(' ")
@@ -146,24 +153,26 @@ class Parser:
             self.accept_token()
             return
         else:
-            print("expected ':' ")
+            print("expected ';' ")
             return
 
     def math(self,firstRun = True):
         print("\n----parent node math, finding children nodes:")
         if(self.token[0]=="float_lit"):
-            '''
-            print("child node (internal): float literal")
-            print("   float literal has child node (token):"+self.token[1])
-            '''
+            
+            print("child node (internal): multi")
+            #print("   float literal has child node (token):"+self.token[1])
+            
             #self.accept_token()
             self.multi()
             if(self.token[1]=="+"):
-                print("child node (internal): float literal")
-                print("   float literal has child node (token):"+self.token[1])
+                print("\n----parent node math, finding children nodes:")
+                print("child node (internal): operator")
+                print("   operator has child node (token):"+self.token[1])
                 self.accept_token()
                 self.math(False)
             elif(self.token[1]==";" and firstRun == False):
+                print("\n----parent node math, finding children nodes:")
                 print("child node (internal): separator")
                 print("   separator has child node (token):"+self.token[1])
                 self.accept_token()
@@ -172,16 +181,18 @@ class Parser:
                 print("math error: math -> multi + multi")
 
         elif (self.token[0]=="int_lit"):
-            print("child node (internal): int literal")
-            print("   int literal has child node (token):"+self.token[1])
+            print("child node (internal): multi")
+            #print("   int literal has child node (token):"+self.token[1])
             #self.accept_token()
             self.multi()
             if(self.token[1]=="+"):
-                print("child node (internal): float literal")
-                print("   float literal has child node (token):"+self.token[1])
+                print("\n----parent node math, finding children nodes:")
+                print("child node (internal): float operator")
+                print("   operator has child node (token):"+self.token[1])
                 self.accept_token()
                 self.math(False)
             elif(self.token[1]==";" and firstRun == False):
+                print("\n----parent node math, finding children nodes:")
                 print("child node (internal): separator")
                 print("   separator has child node (token):"+self.token[1])
                 self.accept_token()
@@ -199,11 +210,6 @@ class Parser:
             print("   float literal has child node (token):"+self.token[1])
             self.accept_token()
             if(self.token[1]==";" or self.token[1]=="+"):
-                '''
-                print("child node (internal): separator")
-                print("   separator has child node (token):"+self.token[1])
-                self.accept_token()
-                '''
                 return
             elif(self.token[1]=="*"):
                 print("child node (internal): operator")
@@ -218,13 +224,10 @@ class Parser:
             else:
                 print("multi format problem")
         else:                           # for int literal's in multi
+            print("child node (internal): int literal")
+            print("   int literal has child node (token):"+self.token[1])
             self.accept_token()
             if(self.token[1]==";" or self.token[1]=="+"):
-                '''
-                print("child node (internal): separator")
-                print("   separator has child node (token):"+self.token[1])
-                self.accept_token()
-                '''
                 return 
             elif(self.token[1]=="*"):
                 print("child node (internal): operator")
@@ -240,6 +243,7 @@ class Parser:
                 print("multi format problem")
 
     def comparison(self):
+        print("\n----parent node comparison, finding children nodes:")
         if(self.token[0]=="id"):
             print("child node (internal): id")
             print("   id has child node (token):"+self.token[1])
@@ -252,7 +256,7 @@ class Parser:
             print("   operator has child node (token):"+self.token[1])
             self.accept_token()
         else:
-            print("expected operator")
+            print("expected operator >")
             return
         if(self.token[0]=="id"):
             print("child node (internal): id")
@@ -264,6 +268,7 @@ class Parser:
             return
         
     def print_statement(self):
+        print("\n----parent node p_statement, finding children nodes:")
         if(self.token[1]=='"'or'“'or'”'or"'"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
@@ -333,7 +338,7 @@ def CutOneLineTokens(line,guiObj,parseObj):
             line = line[result.end():]
     
     guiObj.print_line(outputList)
-    parseObj.parse(outputList)
+    parseObj.parse(outputList,guiObj)
     ### END LEXER LOGIC ###
 
 class GUI:
@@ -344,10 +349,11 @@ class GUI:
         self.master.geometry("1100x600")
         self.master.maxsize(1100,600)
         self.master.config(bg="black")
-        self.parseObj = Parser()
+        self.parseObj = Parser(self)
 
         self.line_num = 0 # number to hold current line
         self.line_num_out = 1   # current line number of the output
+        self.line_num_p = 1
 
         # top left and right frames
         self.UI_frame_top_left = Frame(self.master,width=366,height=100,bg="black").grid(row=0,column=0)
@@ -421,10 +427,14 @@ class GUI:
             self.line_num_out += 2
         self.output_lex.config(state=DISABLED)
 
+    def print_line_parser(self,str):
+        pass
+
     # function to reset both text boxes along with setting the initial value of line counter to 0
     def reset(self):
-        self.line_num_out = 0
+        self.line_num_out = 1
         self.line_num = 0
+        self.line_num_p = 1
         self.line.config(state=NORMAL)
         self.line.delete(0,END)
         self.line.insert(0,"0")
