@@ -48,7 +48,7 @@ class Parser:
         if(self.token[0] == "id" or self.token[1] == "float"): self.exp1()
         elif(self.token[1] == "if"): self.exp2()
         elif(self.token[1] == "print"): self.exp3()
-        else: print("deez")
+        else: self.guiObj.print_line_parser("ERROR: invalid syntax")
         
 
     def accept_token(self):
@@ -56,6 +56,8 @@ class Parser:
         self.guiObj.print_line_parser("     accept token from the list:"+self.token[1]+'\n')
         if(self.token[1] != ';' and self.token[1] != ':' and self.tokenArr):
             self.token=self.tokenArr.pop(0)
+        #elif(not self.tokenArr):
+        #    self.guiObj.print_line_parser("ERROR: expected ';'")
         
 
     # for expressions that start with a keyword (type)
@@ -71,6 +73,7 @@ class Parser:
         
         else:
             print("expect keyword (type) as the first element of the expression!\n")
+            self.guiObj.print_line_parser("ERROR: expect keyword (type) as the first element of the expression!")
             return
         
         if(self.token[0]=="id"):    # for cases of identifiers
@@ -81,6 +84,7 @@ class Parser:
             self.accept_token()
         else:
             print("expect identifier or keyword as the first element of the expression!\n")
+            self.guiObj.print_line_parser("ERROR: expected identifier (id) as the first element after (type)")
             return
         if(self.token[1]=="="):
             print("child node (token):"+self.token[1])
@@ -88,6 +92,7 @@ class Parser:
             self.accept_token()
         else:
             print("expect = as the second element of the expression!")
+            self.guiObj.print_line_parser("ERROR: expected '='")
             return
 
         print("Child node (internal): math")
@@ -105,6 +110,7 @@ class Parser:
             self.accept_token()
         else:
             print("expect identifier or keyword as the first element of the expression!\n")
+            self.guiObj.print_line_parser("ERROR: expected 'if'")
             return
         if(self.token[1]=="("):
             print("child node (internal): separator")
@@ -118,6 +124,7 @@ class Parser:
             self.guiObj.print_line_parser("\n----parent node exp2, finding children nodes:"+'\n')
         else:
             print("expected '(' ")
+            self.guiObj.print_line_parser("ERROR: expected '('")
             return
         if(self.token[1]==")"):
             print("child node (internal): separator")
@@ -126,6 +133,7 @@ class Parser:
             self.accept_token()
         else:
             print("expected ')' ")
+            self.guiObj.print_line_parser("ERROR: expected ')'")
             return
         if(self.token[1]==":"):
             print("child node (internal): separator")
@@ -135,6 +143,7 @@ class Parser:
             return
         else:
             print("expected ':' ")
+            self.guiObj.print_line_parser("ERROR: expected ':'")
             return
 
     # for expressions that start with "print"
@@ -148,6 +157,7 @@ class Parser:
             self.accept_token()
         else:
             print("expect keyword 'print' as the first element of the expression!\n")
+            self.guiObj.print_line_parser("ERROR: expected 'print'")
             return
         if(self.token[1]=="("):
             print("child node (internal): separator")
@@ -161,6 +171,7 @@ class Parser:
             self.guiObj.print_line_parser("\n----parent node exp3, finding children nodes:"+'\n')
         else:
             print("expected '(' ")
+            self.guiObj.print_line_parser("ERROR: expected '('")
             return
         if(self.token[1]==")"):
             print("child node (internal): separator")
@@ -169,6 +180,7 @@ class Parser:
             self.accept_token()
         else:
             print("expected ')' ")
+            self.guiObj.print_line_parser("ERROR: expected ')'")
             return
         if(self.token[1]==";"):
             print("child node (internal): separator")
@@ -178,6 +190,7 @@ class Parser:
             return
         else:
             print("expected ';' ")
+            self.guiObj.print_line_parser("ERROR: expected ';'")
             return
 
     def math(self,firstRun = True):
@@ -208,6 +221,7 @@ class Parser:
                 self.accept_token()
                 return
             else:
+                self.guiObj.print_line_parser("ERROR: math -> multi + multi only!")
                 print("math error: math -> multi + multi")
 
         elif (self.token[0]=="int_lit"):
@@ -233,8 +247,10 @@ class Parser:
                 self.accept_token()
                 return
             else:
+                self.guiObj.print_line_parser("ERROR: math -> multi + multi only!")
                 print("math error: math -> multi + multi")
         else:
+            self.guiObj.print_line_parser("ERROR: math -> multi + multi only!")
             print("math structure error")
             return
 
@@ -262,8 +278,10 @@ class Parser:
                     self.accept_token()
                 else:
                     print("multiplication only supports int * float")
+                    self.guiObj.print_line_parser("ERROR: multi only supports int*float || float")
             else:
                 print("multi format problem")
+                self.guiObj.print_line_parser("ERROR: multi only supports int*float || float")
         else:                           # for int literal's in multi
             print("child node (internal): int literal")
             self.guiObj.print_line_parser("child node (internal): int literal"+'\n')
@@ -285,8 +303,10 @@ class Parser:
                     self.accept_token()
                 else:
                     print("multiplication only supports int * float")
+                    self.guiObj.print_line_parser("ERROR: multi only supports int*float || float")
             else:
                 print("multi format problem")
+                self.guiObj.print_line_parser("ERROR: multi only supports int*float || float")
 
     def comparison(self):
         print("\n----parent node comparison, finding children nodes:")
@@ -299,6 +319,7 @@ class Parser:
             self.accept_token()
         else:
             print("expected id")
+            self.guiObj.print_line_parser("ERROR: expected (id) as first token in comparison")
             return
         if(self.token[1] == '>'):
             print("child node (internal): operator")
@@ -307,6 +328,7 @@ class Parser:
             self.accept_token()
         else:
             print("expected operator >")
+            self.guiObj.print_line_parser("ERROR: expected (operator) '>'")
             return
         if(self.token[0]=="id"):
             print("child node (internal): id")
@@ -317,6 +339,7 @@ class Parser:
             return
         else:
             print("expected id")
+            self.guiObj.print_line_parser("ERROR: expected (id) as third token in comparison")
             return
         
     def print_statement(self):
@@ -329,6 +352,7 @@ class Parser:
             self.accept_token()
         else:
             print("invalid print statement")
+            self.guiObj.print_line_parser("ERROR: expected (separator) '\"'")
         if(self.token[0]=="str_lit"):
             print("child node (internal): string literal")
             self.guiObj.print_line_parser("child node (internal): string literal"+'\n')
@@ -337,6 +361,7 @@ class Parser:
             self.accept_token()
         else:
             print("invalid print statement")
+            self.guiObj.print_line_parser("ERROR: expected (str_lit)")
         if(self.token[1]=='"'or'“'or'”'or"'"):
             print("child node (internal): separator")
             print("   separator has child node (token):"+self.token[1])
@@ -344,6 +369,7 @@ class Parser:
             self.accept_token()
         else:
             print("invalid print statement")
+            self.guiObj.print_line_parser("ERROR: expected (separator) '\"'")
 
 ### END PARSER LOGIC
 
@@ -456,6 +482,12 @@ class GUI:
         self.output_parse = Text(self.UI_frame_right,width=40,height=20,state=DISABLED,bg="#393b40",fg="#92c7d1",bd=5)
         self.output_parse.grid(row=1,column=2,sticky=W)
 
+        self.output_parse.tag_add('error',str(self.line_num_p)+'.0')
+        self.output_parse.tag_config('error',foreground='red')
+
+        self.output_parse.tag_add('good',str(self.line_num_p)+'.0')
+        self.output_parse.tag_config('good',foreground="#92c7d1")
+
         # quit button
         self.quit_button = Button(self.master,text="Quit",command=self.quit,bg="#92c7d1")
         self.quit_button.grid(row=3,column=2)
@@ -487,7 +519,12 @@ class GUI:
     def print_line_parser(self,output):
         if '\n' in output: self.line_num_p += 1
         self.output_parse.config(state=NORMAL)
-        self.output_parse.insert(str(self.line_num_p)+'.0',output)
+        if(output.find('ERROR') != -1):
+            #self.output_parse.tag_add('error',str(self.line_num_p)+'.0')
+            #self.output_parse.tag_config('error',foreground='red')
+            self.output_parse.insert(str(self.line_num_p)+'.0',output+' LINE: '+str(self.line_num)+'\n','error')
+        else:
+            self.output_parse.insert(str(self.line_num_p)+'.0',output,'good')
         self.output_parse.config(state=DISABLED)
         self.line_num_p += 1
 
