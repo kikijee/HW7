@@ -220,6 +220,9 @@ class Parser:
                 self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 return
+            elif(not self.tokenArr and self.token[1] != ';'):
+                self.guiObj.print_line_parser("ERROR: expected ';'")
+                return                
             else:
                 self.guiObj.print_line_parser("ERROR: math -> multi + multi only!")
                 print("math error: math -> multi + multi")
@@ -231,13 +234,14 @@ class Parser:
             #self.accept_token()
             self.multi()
             if(self.token[1]=="+"):
-                print("\n----parent node math, finding children nodes:")
-                self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
-                print("child node (internal): float operator")
-                print("   operator has child node (token):"+self.token[1])
-                self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
-                self.accept_token()
-                self.math(False)
+                #print("\n----parent node math, finding children nodes:")
+                #self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
+                #print("child node (internal): float operator")
+                #print("   operator has child node (token):"+self.token[1])
+                #self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
+                #self.accept_token()
+                #self.math(False)
+                self.guiObj.print_line_parser("ERROR: multi -> float*int || float")
             elif(self.token[1]==";" and firstRun == False):
                 print("\n----parent node math, finding children nodes:")
                 self.guiObj.print_line_parser("\n----parent node math, finding children nodes:"+'\n')
@@ -246,6 +250,9 @@ class Parser:
                 self.guiObj.print_line_parser("child node (token):"+self.token[1]+'\n')
                 self.accept_token()
                 return
+            elif(not self.tokenArr and self.token != ';'):
+                self.guiObj.print_line_parser("ERROR: expected ';'")
+                return      
             else:
                 self.guiObj.print_line_parser("ERROR: math -> multi + multi only!")
                 print("math error: math -> multi + multi")
@@ -263,7 +270,7 @@ class Parser:
             print("   float literal has child node (token):"+self.token[1])
             self.guiObj.print_line_parser("   float literal has child node (token):"+self.token[1]+'\n')
             self.accept_token()
-            if(self.token[1]==";" or self.token[1]=="+"):
+            if(self.token[1]==";" or self.token[1]=="+" or len(self.tokenArr)==0):
                 return
             elif(self.token[1]=="*"):
                 print("child node (internal): operator")
@@ -288,7 +295,7 @@ class Parser:
             print("   int literal has child node (token):"+self.token[1])
             self.guiObj.print_line_parser("   int literal has child node (token):"+self.token[1]+'\n')
             self.accept_token()
-            if(self.token[1]==";" or self.token[1]=="+"):
+            if(self.token[1]==";" or self.token[1]=="+" or len(self.tokenArr)==0):
                 return 
             elif(self.token[1]=="*"):
                 print("child node (internal): operator")
