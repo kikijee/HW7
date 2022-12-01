@@ -1,6 +1,6 @@
 # Lexical-Analysis-and-Parsing-GUI
 ## Description:
-This program is made to simulate the lexical analysis and parsing of a compilier process and to visualize the process through a GUI with use of the Tkinter and Regex 
+This program is made to simulate the lexical analysis and parsing of a compiler process and to visualize the process through a GUI with use of the Tkinter and Regex 
 libraries in python. Accepts three expressions *shown below in the BNF Grammer section*
 ## Functionality:
 - The program would first take in multiple lines of code from the user input on the GUI
